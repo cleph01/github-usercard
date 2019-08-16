@@ -87,50 +87,46 @@ const followersArray = [
   'bigknell'
 ];
 
-followersArray.forEach( item => {
-
-  axios.get(`https://api.github.com/users/${item}`)
-    .then((response) => {
-        
-        //Network request finished
-        const card = CardCreator(response.data);
-
-        cards_container.appendChild(card);
-        
-    })
-    .catch((error) => {
-        console.log("Network request was unsuccessful");
-        console.log(error);
-    })
-  .then(() => {
-
-    axios.get(`https://api.github.com/users/cleph01/followers`)
+axios.get(`https://api.github.com/users/cleph01/followers`)
       .then((response) => {
           
               //Network request finished
               response.data.forEach( item => {
 
-                axios.get(`https://api.github.com/users/${item.login}`)
-                  .then((response) => {
-                      
-                      //Network request finished
-                      const card = CardCreator(response.data);
-
-                      cards_container.appendChild(card);
-                      
-                  })
-                  .catch((error) => {
-                      console.log("Network request was unsuccessful");
-                      console.log(error);
-                  })
-              });  
+                followersArray.push(item.login);
+                
+              });
+              
+              // console.log(followersArray);
       })
       .catch((error) => {
         console.log("Follower request was unsuccessful");
         console.log(error);
+      })
+      .then(() => {
+          followersArray.forEach( item => {
+
+            axios.get(`https://api.github.com/users/${item}`)
+              .then((response) => {
+                  
+                  //Network request finished
+                  const card = CardCreator(response.data);
+          
+                  cards_container.appendChild(card);
+                  
+              })
+              .catch((error) => {
+                  console.log("Network request was unsuccessful");
+                  console.log(error);
+              })
+          });
+      })
+      .catch((error) => {
+        console.log("Chaining unsuccessful");
+        console.log(error);
       });
-  });
-});
+
+
 
 
 
